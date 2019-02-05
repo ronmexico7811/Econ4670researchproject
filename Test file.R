@@ -1,9 +1,9 @@
-x <- 8 
-y <- 9
-
-z <- x * y
-w <- y - x
-print(c(x , y , z , w))
-
-b <- x * 2 
-d <- y * 2 
+a <- matrix(c(1,2,3,4,7,5,3,6,9) , nrow = 3 , ncol = 3 , byrow = TRUE)
+print(a)
+det(a)
+b <- matrix(c(1,1,4,8,11,-2,0,4,7) , nrow = 3 , ncol = 3 , byrow = TRUE)
+print(b)
+det(b)
+c <- matrix(c(2,7,0,1,5,6,4,8,0,0,9,0,1,-3,1,4) , nrow = 4 , ncol = 4 , byrow = TRUE)
+print(c)
+det(c)
