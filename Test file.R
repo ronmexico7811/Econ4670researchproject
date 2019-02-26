@@ -1,55 +1,47 @@
 library(readr)
 shelter_skim <- read_csv("Econ4670researchproject/shelter_skim.csv")
+shelter_skim$TotalEnrollments = NULL
 
-#Function that returns Root Mean Squared Error
-rmse <- function(error)
-{
-  sqrt(mean(error^2))
-}
+shelter_return <- subset(shelter_skim , StayedInShelterMoreThanOnce == 1)
+shelter_no_return <- subset(shelter_skim , StayedInShelterMoreThanOnce == 0)
+shelter_no <- shelter_no_return[1:328,]
+shelter_sample <- merge(shelter_no , shelter_return , all = TRUE)
+summary(shelter_sample)
+shelter_random <- shelter_sample[sample(nrow(shelter_sample)),]
 
 #Import Library
 library(e1071) #Contains the SVM 
-Train <- shelter_skim[1:742,]
-Test <- shelter_skim[743:1060,]
-# there are various options associated with SVM training; like changing kernel, gamma and C value.
+Train <- shelter_random[1:460,]
+Test <- shelter_random[461:656,]
 
 #model linear
 model_l <- svm(StayedInShelterMoreThanOnce ~.,data=Train, kernel = "linear", type = "C-classification", gamma=0.2, cost=100)
+summary(model_l)
 
 #Predict Output
 preds_l <- predict(model_l,Test)
 table(preds_l, Test$StayedInShelterMoreThanOnce)
 
-#rmse linear
-actual <- as.integer(Test$StayedInShelterMoreThanOnce)
-preds_sl <- as.integer(preds_l)
-error_l <- preds_sl - actual
-rmse(error_l)
-
 #model radial
 model_r <- svm(StayedInShelterMoreThanOnce ~.,data=Train, kernel = "radial", type = "C-classification", gamma=0.2, cost=100)
+summary(model_r)
 
 #Predict Output
 preds_r <- predict(model_r,Test)
 table(preds_r, Test$StayedInShelterMoreThanOnce)
 
-#rmse radial
-actual <- as.integer(Test$StayedInShelterMoreThanOnce)
-preds_sr <- as.integer(preds_r)
-error_r <- preds_sr - actual
-rmse(error_r)
-
 #model polynomial
 model_p <- svm(StayedInShelterMoreThanOnce ~.,data=Train, kernel = "polynomial", type = "C-classification", gamma=0.2, cost=100)
+summary(model_p)
 
 #Predict Output
 preds_p <- predict(model_p,Test)
 table(preds_p, Test$StayedInShelterMoreThanOnce)
 
-#rmse linear
-actual <- as.integer(Test$StayedInShelterMoreThanOnce)
-preds_sp <- as.integer(preds_p)
-error_p <- preds_sp - actual
-rmse(error_p)
+count <- length(unique(shelter_skim$StayedInShelterMoreThanOnce))
+count
 
-summary(model_l)
+model_l$coefs
+
+
+#plot(model_l , shelter_random , )
